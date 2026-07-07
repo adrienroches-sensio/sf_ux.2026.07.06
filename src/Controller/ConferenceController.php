@@ -23,8 +23,6 @@ class ConferenceController extends AbstractController
 
     #[Route('/conference', name: 'app_conference_list', methods: ['GET'])]
     public function list(
-        ConferenceRepository $repository,
-
         #[MapQueryParameter('from_date')]
         string $fromDateString = '',
 
@@ -34,14 +32,7 @@ class ConferenceController extends AbstractController
         $fromDate = '' !== $fromDateString ? DateTimeImmutable::createFromFormat(DateTimeInterface::ATOM, $fromDateString) : null;
         $toDate = '' !== $toDateString ? DateTimeImmutable::createFromFormat(DateTimeInterface::ATOM, $toDateString) : null;
 
-        if ($fromDate instanceof  DateTimeImmutable || $toDate instanceof DateTimeImmutable) {
-            $conferences = $repository->findConferencesBetweenDates($fromDate, $toDate);
-        } else {
-            $conferences = $repository->findAll();
-        }
-
         return $this->render('conference/list.html.twig', [
-            'conferences' => $conferences,
             'from_date' => $fromDate,
             'to_date' => $toDate,
         ]);

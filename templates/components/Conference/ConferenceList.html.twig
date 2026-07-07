@@ -1,0 +1,9 @@
+<div {{ attributes.defaults({
+    class: 'row row-cols-1 row-cols-md-2 g-4 mb-5'
+}) }}>
+    {% for conference in this.getConferences() %}
+        <twig:Conference:Card :conference="conference" />
+    {% else %}
+        <div>There are no conferences yet...</div>
+    {% endfor %}
+</div>
