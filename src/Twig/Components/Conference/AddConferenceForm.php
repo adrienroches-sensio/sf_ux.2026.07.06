@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Twig\Components\Conference;
 
+use App\Entity\Conference;
 use App\Form\ConferenceType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,8 +31,13 @@ final class AddConferenceForm extends AbstractController
     {
         $this->submitForm();
 
+        /** @var Conference $conference */
+        $conference = $this->getForm()->getData();
+        $entityManager->persist($conference);
+        $entityManager->flush();
+
         return $this->redirectToRoute('app_conference_show', [
-            'id' => 99999,
+            'id' => $conference->getId(),
         ]);
     }
 }
