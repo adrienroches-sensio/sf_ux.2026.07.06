@@ -40,6 +40,8 @@ class ConferenceController extends AbstractController
     {
         return $this->render('conference/list.html.twig', [
             'conferences' => $repository->findAll(),
+            'from_date' => null,
+            'to_date' => null,
         ]);
     }
 
