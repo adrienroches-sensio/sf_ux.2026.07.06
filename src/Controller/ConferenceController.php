@@ -7,12 +7,14 @@ namespace App\Controller;
 use App\Entity\Conference;
 use App\Form\ConferenceType;
 use App\Repository\ConferenceRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Routing\Requirement\Requirement;
+use function is_string;
 
 class ConferenceController extends AbstractController
 {
@@ -36,12 +38,28 @@ class ConferenceController extends AbstractController
     }
 
     #[Route('/conference', name: 'app_conference_list', methods: ['GET'])]
-    public function list(ConferenceRepository $repository): Response
-    {
+    public function list(
+        ConferenceRepository $repository,
+
+        #[MapQueryParameter('from_date')]
+        string|null $fromDateString = null,
+
+        #[MapQueryParameter('to_date')]
+        string|null $toDateString = null,
+    ): Response {
+        $fromDate = is_string($fromDateString) && '' !== $fromDateString ? DateTimeImmutable::createFromFormat('Y-m-d', $fromDateString) : null;
+        $toDate = is_string($toDateString) && '' !== $toDateString ? DateTimeImmutable::createFromFormat('Y-m-d', $toDateString) : null;
+
+        if ($fromDate instanceof  DateTimeImmutable || $toDate instanceof DateTimeImmutable) {
+            $conferences = $repository->findConferencesBetweenDates($fromDate, $toDate);
+        } else {
+            $conferences = $repository->findAll();
+        }
+
         return $this->render('conference/list.html.twig', [
-            'conferences' => $repository->findAll(),
-            'from_date' => null,
-            'to_date' => null,
+            'conferences' => $conferences,
+            'from_date' => $fromDate,
+            'to_date' => $toDate,
         ]);
     }
 
