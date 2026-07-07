@@ -6,7 +6,6 @@ namespace App\Twig\Components\Conference;
 
 use App\Form\ConferenceFilterType;
 use DateTimeImmutable;
-use DateTimeInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,11 +21,16 @@ final class ListFilterForm extends AbstractController
     use DefaultActionTrait;
     use ComponentWithFormTrait;
 
-    #[LiveProp(writable: true, url: true)]
+    #[LiveProp(writable: true, format: 'Y-m-d')]
     public DateTimeImmutable|null $fromDate = null;
 
-    #[LiveProp(writable: true, url: true)]
+    #[LiveProp(writable: true, format: 'Y-m-d')]
     public DateTimeImmutable|null $toDate = null;
+
+    private function getDataModelValue(): ?string
+    {
+        return 'norender|*';
+    }
 
     protected function instantiateForm(): FormInterface
     {
@@ -54,8 +58,8 @@ final class ListFilterForm extends AbstractController
         $this->toDate = $formData['toDate'];
 
         return $this->redirectToRoute('app_conference_list', [
-            'fromDate' => $this->fromDate?->format(DateTimeInterface::ATOM),
-            'toDate' => $this->toDate?->format(DateTimeInterface::ATOM),
+            'fromDate' => $this->fromDate?->format('Y-m-d'),
+            'toDate' => $this->toDate?->format('Y-m-d'),
         ]);
     }
 }

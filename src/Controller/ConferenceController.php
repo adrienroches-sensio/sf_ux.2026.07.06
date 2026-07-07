@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Conference;
-use App\Repository\ConferenceRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,14 +22,14 @@ class ConferenceController extends AbstractController
 
     #[Route('/conference', name: 'app_conference_list', methods: ['GET'])]
     public function list(
-        #[MapQueryParameter('from_date')]
+        #[MapQueryParameter('fromDate')]
         string $fromDateString = '',
 
-        #[MapQueryParameter('to_date')]
+        #[MapQueryParameter('toDate')]
         string $toDateString = '',
     ): Response {
-        $fromDate = '' !== $fromDateString ? DateTimeImmutable::createFromFormat(DateTimeInterface::ATOM, $fromDateString) : null;
-        $toDate = '' !== $toDateString ? DateTimeImmutable::createFromFormat(DateTimeInterface::ATOM, $toDateString) : null;
+        $fromDate = '' !== $fromDateString ? DateTimeImmutable::createFromFormat('Y-m-d', $fromDateString) : null;
+        $toDate = '' !== $toDateString ? DateTimeImmutable::createFromFormat('Y-m-d', $toDateString) : null;
 
         return $this->render('conference/list.html.twig', [
             'from_date' => $fromDate,
