@@ -42,13 +42,13 @@ class ConferenceController extends AbstractController
         ConferenceRepository $repository,
 
         #[MapQueryParameter('from_date')]
-        string|null $fromDateString = null,
+        string $fromDateString = '',
 
         #[MapQueryParameter('to_date')]
-        string|null $toDateString = null,
+        string $toDateString = '',
     ): Response {
-        $fromDate = is_string($fromDateString) && '' !== $fromDateString ? DateTimeImmutable::createFromFormat('Y-m-d', $fromDateString) : null;
-        $toDate = is_string($toDateString) && '' !== $toDateString ? DateTimeImmutable::createFromFormat('Y-m-d', $toDateString) : null;
+        $fromDate = '' !== $fromDateString ? DateTimeImmutable::createFromFormat('Y-m-d', $fromDateString) : null;
+        $toDate = '' !== $toDateString ? DateTimeImmutable::createFromFormat('Y-m-d', $toDateString) : null;
 
         if ($fromDate instanceof  DateTimeImmutable || $toDate instanceof DateTimeImmutable) {
             $conferences = $repository->findConferencesBetweenDates($fromDate, $toDate);
