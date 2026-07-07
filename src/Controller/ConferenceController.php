@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\Conference;
 use App\Repository\ConferenceRepository;
 use DateTimeImmutable;
+use DateTimeInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
@@ -30,8 +31,8 @@ class ConferenceController extends AbstractController
         #[MapQueryParameter('to_date')]
         string $toDateString = '',
     ): Response {
-        $fromDate = '' !== $fromDateString ? DateTimeImmutable::createFromFormat('Y-m-d', $fromDateString) : null;
-        $toDate = '' !== $toDateString ? DateTimeImmutable::createFromFormat('Y-m-d', $toDateString) : null;
+        $fromDate = '' !== $fromDateString ? DateTimeImmutable::createFromFormat(DateTimeInterface::ATOM, $fromDateString) : null;
+        $toDate = '' !== $toDateString ? DateTimeImmutable::createFromFormat(DateTimeInterface::ATOM, $toDateString) : null;
 
         if ($fromDate instanceof  DateTimeImmutable || $toDate instanceof DateTimeImmutable) {
             $conferences = $repository->findConferencesBetweenDates($fromDate, $toDate);
